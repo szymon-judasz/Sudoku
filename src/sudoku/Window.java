@@ -9,20 +9,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.media.Media;
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,13 +35,17 @@ public class Window extends javax.swing.JFrame {
         canva.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         
         canva.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent evt) {
                 canva.clickHandler(evt);
                 repaint();
             }
-});
-        canva.setGameState(GameState.example());
-        
+        });
+        String str = JOptionPane.showInputDialog(this, "Wybierz poziom (0-2)", null);
+        if(str == null){
+            return;
+        }
+        canva.setGameState(new GameState.GameCreator().createGameState(GameStateCatalog.get(Integer.parseInt(str))));
         this.setContentPane(canva);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
@@ -133,13 +127,13 @@ public class Window extends javax.swing.JFrame {
     class MyCanva extends JPanel
     {
         private GameState state;
+        public MyCanva() {
+            setPreferredSize(new Dimension(400, 400));
+        }
         public void setGameState(GameState state)
         {
             this.state = state;
-        }
-        Image one;
-        public MyCanva() {
-            setPreferredSize(new Dimension(400, 400));
+            setPreferredSize(new Dimension(state.x * 100, state.y * 100));
         }
         
         @Override

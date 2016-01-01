@@ -1,6 +1,5 @@
 package sudoku;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class GameState {
@@ -38,6 +37,50 @@ public class GameState {
                     cell.addVetoableChangeListener(group);
                 });
             });
+        }
+
+        
+        
+        
+        static class GameCreator // can be moved to another file since all fields in GameState are public
+        {
+            GameState createGameState(GameDescription gd)
+            {
+                GameState result = new GameState();
+                result.x = (int)Math.sqrt(gd.groupMap.length());
+                result.y = result.x;
+                if (gd.groupMap.length() != gd.valueMap.length())
+                {
+                    throw new IllegalArgumentException("Different sizes of maps");
+                }
+                if (result.x * result.x != gd.groupMap.length())
+                {
+                    throw new IllegalArgumentException("Map size must be a square of natural number");
+                }
+                
+                for(int i = 0; i < result.x; i++)
+                {
+                    result.groupList.add(new Group());
+                    result.horizontal.add(new Group());
+                    result.vertical.add(new Group());
+
+                }
+                
+                for (int i = 0; i < gd.groupMap.length(); i++)
+                {
+                    int _x = i % result.x;
+                    int _y = i / result.y;
+                    int value = gd.valueMap.charAt(i) - '0';
+                    int groupNumber = gd.groupMap.charAt(i) - '0';
+                    Cell parsedCell = new Cell(value, value == 0, _y, _x);
+                    
+                    result.groupList.get(groupNumber).addCell(parsedCell);
+                    result.horizontal.get(_y).addCell(parsedCell);
+                    result.vertical.get(_x).addCell(parsedCell);
+                }
+                result.registerListeners();
+                return result;
+            }
         }
 	
         public static GameState example()
