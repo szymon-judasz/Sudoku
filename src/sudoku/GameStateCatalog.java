@@ -1,23 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sudoku;
-
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- *
- * @author Z500User
- */
 public class GameStateCatalog {
     public static GameDescription get(int i)
     {
         return entryCollection.get(i);
     }
     private static List<GameDescription> entryCollection;
+    public static Integer numberOfLevels;
     static {
         entryCollection = new ArrayList<>();
         GameDescription gameStateCatalogEntry;
@@ -67,7 +57,7 @@ public class GameStateCatalog {
                 + "040006"
                 + "000002";
         entryCollection.add(gameStateCatalogEntry);
-        
+        numberOfLevels = entryCollection.size();
         
     }
     

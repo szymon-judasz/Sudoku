@@ -7,4 +7,3 @@ public enum Action {
         TRYING_TO_LESSEN_CONFLICT // making conflict false
 	
 }
-// to do - make conflict beans

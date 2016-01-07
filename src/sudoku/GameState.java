@@ -1,10 +1,8 @@
 package sudoku;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameState {
-
     List<Group> groupList;
     List<Group> horizontal;
     List<Group> vertical;

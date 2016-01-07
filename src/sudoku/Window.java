@@ -8,7 +8,6 @@ package sudoku;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
@@ -33,7 +32,7 @@ public class Window extends javax.swing.JFrame {
 
         canva.setBackground(new java.awt.Color(255, 255, 255));
         canva.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-        
+
         canva.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent evt) {
@@ -41,17 +40,25 @@ public class Window extends javax.swing.JFrame {
                 repaint();
             }
         });
-        String str = JOptionPane.showInputDialog(this, "Wybierz poziom (0-2)", null);
-        if(str == null){
-            return;
+        int choosen_level = -1;
+        while (choosen_level < 0 || choosen_level >= GameStateCatalog.numberOfLevels) {
+            String str = JOptionPane.showInputDialog(null, "Wybierz poziom (0-2)", null);
+            if (str == null) {
+                return;
+            }
+            try {
+                choosen_level = Integer.parseInt(str);
+            } catch (NumberFormatException ex) {
+
+            }
+
         }
-        canva.setGameState(new GameState.GameCreator().createGameState(GameStateCatalog.get(Integer.parseInt(str))));
+
+        canva.setGameState(new GameState.GameCreator().createGameState(GameStateCatalog.get(choosen_level)));
         this.setContentPane(canva);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -112,7 +119,7 @@ public class Window extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Window.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */
@@ -124,32 +131,31 @@ public class Window extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
-    class MyCanva extends JPanel
-    {
+    class MyCanva extends JPanel {
+
         private GameState state;
+
         public MyCanva() {
             setPreferredSize(new Dimension(400, 400));
         }
-        public void setGameState(GameState state)
-        {
+
+        public void setGameState(GameState state) {
             this.state = state;
             setPreferredSize(new Dimension(state.x * 100, state.y * 100));
         }
-        
+
         @Override
-        public void paintComponent(Graphics g)
-        {
+        public void paintComponent(Graphics g) {
             System.out.println("painting");
-           super.paintComponent(g);
+            super.paintComponent(g);
             drawBoard(g);
-            if(state != null)
-            {
-                
+            if (state != null) {
+
             }
-            
+
         }
-        
-        void drawBoard(Graphics g){
+
+        void drawBoard(Graphics g) {
             g.clearRect(0, 0, 300, 300);
             drawGrid(g);
             state.horizontal.stream().forEach((group) -> {
@@ -159,72 +165,89 @@ public class Window extends javax.swing.JFrame {
             });
 
         }
-        void drawGrid(Graphics g){
-            for(int i = 1; i < state.x; i++)
-                g.drawLine(100*i, 0, 100*i, 100*state.y);
-            
-            for(int i = 1; i < state.y; i++)
-                g.drawLine(0, 100*i, 100*state.x, 100*i);
-            
+
+        void drawGrid(Graphics g) {
+            for (int i = 1; i < state.x; i++) {
+                g.drawLine(100 * i, 0, 100 * i, 100 * state.y);
+            }
+
+            for (int i = 1; i < state.y; i++) {
+                g.drawLine(0, 100 * i, 100 * state.x, 100 * i);
+            }
+
             state.groupList.stream().forEach((group) -> {
                 drawGroupBorder(g, group);
             });
         }
-        void drawGroupBorder(Graphics g, Group group){
-            int[][] arrayH = new int[state.x][state.y+1];
-            for (int[] arrayH1 : arrayH) 
-                for (int j = 0; j < arrayH1.length; j++) 
+
+        void drawGroupBorder(Graphics g, Group group) {
+            int[][] arrayH = new int[state.x][state.y + 1];
+            for (int[] arrayH1 : arrayH) {
+                for (int j = 0; j < arrayH1.length; j++) {
                     arrayH1[j] = 1;
-            
-            int[][] arrayV = new int[state.x+1][state.y];
-            for (int[] arrayV1 : arrayV)
-                for (int j = 0; j < arrayV1.length; j++) 
+                }
+            }
+
+            int[][] arrayV = new int[state.x + 1][state.y];
+            for (int[] arrayV1 : arrayV) {
+                for (int j = 0; j < arrayV1.length; j++) {
                     arrayV1[j] = 1;
-            
+                }
+            }
+
             group.cells.stream().map((cell) -> {
                 arrayH[cell.getX()][cell.getY()] *= -1;
                 return cell;
             }).map((cell) -> {
-                arrayH[cell.getX()][cell.getY()+1] *= -1;
+                arrayH[cell.getX()][cell.getY() + 1] *= -1;
                 return cell;
             }).map((cell) -> {
                 arrayV[cell.getX()][cell.getY()] *= -1;
                 return cell;
             }).forEach((cell) -> {
-                arrayV[cell.getX()+1][cell.getY()] *= -1;
+                arrayV[cell.getX() + 1][cell.getY()] *= -1;
             });
-            
-            for(int i = 0; i < arrayH.length; i++)
-                for(int j = 1; j < arrayH[i].length - 1; j++)
-                    if(arrayH[i][j] == -1) 
-                        g.fillRect(100*i, j*100 - 2, 100, 4); 
-            
-            for(int i = 1; i < arrayV.length - 1; i++)
-                for(int j = 0; j < arrayV[i].length; j++)
-                    if(arrayV[i][j] == -1)
-                        g.fillRect(100*i - 2, j*100, 4, 100); 
+
+            for (int i = 0; i < arrayH.length; i++) {
+                for (int j = 1; j < arrayH[i].length - 1; j++) {
+                    if (arrayH[i][j] == -1) {
+                        g.fillRect(100 * i, j * 100 - 2, 100, 4);
+                    }
+                }
+            }
+
+            for (int i = 1; i < arrayV.length - 1; i++) {
+                for (int j = 0; j < arrayV[i].length; j++) {
+                    if (arrayV[i][j] == -1) {
+                        g.fillRect(100 * i - 2, j * 100, 4, 100);
+                    }
+                }
+            }
         }
-        void drawCell(Graphics g, Cell c){
+
+        void drawCell(Graphics g, Cell c) {
             g.clearRect(c.getX() * 100 + 10, c.getY() * 100 + 10, 80, 80);
-            if(c.getValue() == 0)
+            if (c.getValue() == 0) {
                 return;
+            }
             g.setColor(Color.red);
-            if (c.isConflict())
+            if (c.isConflict()) {
                 g.fillRect(c.getX() * 100 + 10, c.getY() * 100 + 60, 80, 20);
+            }
             g.setColor(Color.BLACK);
             g.drawString(Integer.toString(c.getValue()), c.getX() * 100 + 45, c.getY() * 100 + 45);
         }
-        
-        void clickHandler(MouseEvent evt)
-        {
+
+        void clickHandler(MouseEvent evt) {
             int mousex = evt.getX();
             int mousey = evt.getY();
             int cellx = mousex / 100;
             int celly = mousey / 100;
-        
+
             String str = JOptionPane.showInputDialog(this, "Wprowadz liczbe. 0 kasuje.", null);
-            if(str == null)
+            if (str == null) {
                 return;
+            }
             int newint;
             try {
                 newint = Integer.parseInt(str);
