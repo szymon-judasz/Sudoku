@@ -5,11 +5,9 @@
         <group>
             <file>file:/C:/Users/Z500User/Documents/NetBeansProjects/Sudoku/src/sudoku/Window.java</file>
             <file>file:/C:/Users/Z500User/Documents/NetBeansProjects/Sudoku/src/sudoku/Cell.java</file>
-            <file>file:/C:/Users/Z500User/Documents/NetBeansProjects/Sudoku/src/sudoku/JavaPaintUI.java</file>
             <file>file:/C:/Users/Z500User/Documents/NetBeansProjects/Sudoku/src/sudoku/GameState.java</file>
             <file>file:/C:/Users/Z500User/Documents/NetBeansProjects/Sudoku/src/sudoku/Group.java</file>
-            <file>file:/C:/Users/Z500User/Documents/NetBeansProjects/Sudoku/src/sudoku/Sudoku.java</file>
-            <file>file:/C:/Users/Z500User/Documents/NetBeansProjects/Sudoku/src/sudoku/Action.java</file>
+            <file>file:/C:/Users/Z500User/Documents/NetBeansProjects/Sudoku/src/sudoku/GameStateCatalog.java</file>
         </group>
     </open-files>
 </project-private>
